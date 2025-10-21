@@ -12,6 +12,7 @@ radius = 0.05
 continuous_cd = true
 contact_monitor = true
 script = ExtResource("1")
+lifetime = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("1")
