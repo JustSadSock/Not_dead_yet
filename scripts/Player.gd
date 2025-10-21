@@ -2,6 +2,7 @@ extends CharacterBody3D
 
 const SHOOT_ACTION := "shoot"
 const BULLET_SCENE: PackedScene = preload("res://scenes/Bullet.tscn")
+const BULLET_SPAWN_OFFSET: float = 0.6
 
 @export var move_speed: float = 5.0
 @export var sprint_speed: float = 8.0
@@ -22,6 +23,8 @@ func _ready() -> void:
     Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
     if head == null or camera == null:
         push_error("Player is missing a Head/Camera3D hierarchy.")
+    else:
+        camera.current = true
     _ensure_default_inputs()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -34,6 +37,8 @@ func _unhandled_input(event: InputEvent) -> void:
         rotation.y = yaw
     elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
         Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+    elif event is InputEventMouseButton and event.pressed and Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+        Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _physics_process(delta: float) -> void:
     var input_dir := Vector3.ZERO
@@ -70,17 +75,21 @@ func _physics_process(delta: float) -> void:
 func _try_shoot() -> void:
     if _cooldown > 0.0:
         return
-    _cooldown = 1.0 / fire_rate
-
-    if camera == null:
+    if camera == null or not camera.is_inside_tree():
         return
+    var world := get_tree().current_scene
+    if world == null:
+        return
+
+    _cooldown = 1.0 / fire_rate
 
     var bullet := BULLET_SCENE.instantiate()
     if bullet is RigidBody3D:
+        world.add_child(bullet)
         var dir := -camera.global_transform.basis.z.normalized()
-        bullet.global_transform.origin = camera.global_transform.origin + dir * 0.3
+        bullet.global_position = camera.global_position + dir * BULLET_SPAWN_OFFSET
+        bullet.look_at(bullet.global_position + dir, Vector3.UP)
         bullet.linear_velocity = dir * bullet_speed
-        get_tree().current_scene.add_child(bullet)
 
 func _ensure_default_inputs() -> void:
     var key_map := {
