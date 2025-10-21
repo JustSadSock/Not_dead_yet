@@ -1,17 +1,17 @@
 extends CharacterBody3D
 
-@export var move_speed := 5.0
-@export var sprint_speed := 8.0
-@export var jump_velocity := 4.5
-@export var mouse_sensitivity := 0.2
-@export var fire_rate := 5.0
-@export var bullet_speed := 40.0
+@export var move_speed: float = 5.0
+@export var sprint_speed: float = 8.0
+@export var jump_velocity: float = 4.5
+@export var mouse_sensitivity: float = 0.2
+@export var fire_rate: float = 5.0
+@export var bullet_speed: float = 40.0
 
-var gravity := ProjectSettings.get_setting("physics/3d/default_gravity")
-var pitch := 0.0
-var yaw := 0.0
-var _cooldown := 0.0
-var bullet_scene := preload("res://scenes/Bullet.tscn")
+var gravity: float = float(ProjectSettings.get_setting("physics/3d/default_gravity"))
+var pitch: float = 0.0
+var yaw: float = 0.0
+var _cooldown: float = 0.0
+var bullet_scene: PackedScene = preload("res://scenes/Bullet.tscn")
 
 func _ready():
     Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
