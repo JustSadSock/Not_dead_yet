@@ -129,7 +129,7 @@ func _create_cell(coord: Vector2i) -> void:
                 push_error("Apartment cell scene must inherit from Node3D.")
                 return
         instance.name = "Cell_%d_%d" % [coord.x, coord.y]
-        var script := instance.get_script()
+        var script: Script = instance.get_script()
         if instance is ApartmentCell:
                 instance.cell_size = cell_size
                 instance.set_style_seed(_coordinate_seed(coord) * 17)
