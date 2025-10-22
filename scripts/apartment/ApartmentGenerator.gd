@@ -59,9 +59,8 @@ func _cleanup_distant_cells(center: Vector2i) -> void:
         for coord in to_remove:
                 var data: Dictionary = _cells.get(coord, {})
                 if data.has("node"):
-                        var node_variant := data["node"]
-                        if node_variant is Node:
-                                var node: Node = node_variant
+                        var node: Node = data.get("node", null)
+                        if node != null:
                                 node.queue_free()
                 _cells.erase(coord)
                 _pending_connections.erase(coord)
@@ -164,9 +163,8 @@ func _update_cell_connection(coord: Vector2i, direction: int, enabled: bool) -> 
         if connections[direction] == enabled:
                 return
         connections[direction] = enabled
-        var node_variant := data.get("node", null)
-        if node_variant is Node:
-                var node: Node = node_variant
+        var node: Node = data.get("node", null)
+        if node != null:
                 if node.has_method("set_connection"):
                         node.call_deferred("set_connection", direction, enabled)
 
