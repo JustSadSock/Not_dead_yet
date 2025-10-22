@@ -13,7 +13,7 @@ const DIR_VECTORS := [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(
 var _player: Node3D
 var _time_accumulator: float = 0.0
 var _cells: Dictionary = {}
-var _pending_connections: Dictionary = {}
+var _pending_connections: Dictionary[Vector2i, Array[int]] = {}
 var _last_player_cell := Vector2i(2147483647, 2147483647)
 
 func _ready() -> void:
@@ -90,7 +90,7 @@ func _create_cell(coord: Vector2i) -> void:
         for dir in range(connections.size()):
                 if connections[dir]:
                         connection_count += 1
-        var directions := [0, 1, 2, 3]
+        var directions: Array[int] = [0, 1, 2, 3]
         directions.shuffle()
         for dir in directions:
                 if connection_count >= desired_openings:
@@ -101,7 +101,7 @@ func _create_cell(coord: Vector2i) -> void:
                         connections[dir] = true
                         connection_count += 1
         if connection_count < desired_openings:
-                var remaining: Array = []
+                var remaining: Array[int] = []
                 for dir in range(connections.size()):
                         if not connections[dir]:
                                 remaining.append(dir)
@@ -148,7 +148,8 @@ func _create_cell(coord: Vector2i) -> void:
 
 func _queue_pending_connection(coord: Vector2i, direction: int) -> void:
         if not _pending_connections.has(coord):
-                _pending_connections[coord] = []
+                var new_list: Array[int] = []
+                _pending_connections[coord] = new_list
         var list: Array[int] = _pending_connections[coord]
         if direction not in list:
                 list.append(direction)
