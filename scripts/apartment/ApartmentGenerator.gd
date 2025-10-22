@@ -59,9 +59,8 @@ func _cleanup_distant_cells(center: Vector2i) -> void:
         for coord in to_remove:
                 var data: Dictionary = _cells.get(coord, {})
                 if data.has("node"):
-                        var node_variant := data["node"]
-                        if node_variant is Node:
-                                var node: Node = node_variant
+                        var node: Node = data.get("node", null)
+                        if node != null:
                                 node.queue_free()
                 _cells.erase(coord)
                 _pending_connections.erase(coord)
@@ -130,7 +129,7 @@ func _create_cell(coord: Vector2i) -> void:
                 push_error("Apartment cell scene must inherit from Node3D.")
                 return
         instance.name = "Cell_%d_%d" % [coord.x, coord.y]
-        var script := instance.get_script()
+        var script: Script = instance.get_script()
         if instance is ApartmentCell:
                 instance.cell_size = cell_size
                 instance.set_style_seed(_coordinate_seed(coord) * 17)
@@ -164,9 +163,8 @@ func _update_cell_connection(coord: Vector2i, direction: int, enabled: bool) -> 
         if connections[direction] == enabled:
                 return
         connections[direction] = enabled
-        var node_variant := data.get("node", null)
-        if node_variant is Node:
-                var node: Node = node_variant
+        var node: Node = data.get("node", null)
+        if node != null:
                 if node.has_method("set_connection"):
                         node.call_deferred("set_connection", direction, enabled)
 

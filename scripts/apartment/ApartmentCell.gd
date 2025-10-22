@@ -276,7 +276,7 @@ func _add_radiator(rng: RandomNumberGenerator) -> void:
                         closed_dirs.append(dir)
         if closed_dirs.is_empty():
                 closed_dirs = [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
-        var direction := closed_dirs[rng.randi_range(0, closed_dirs.size() - 1)]
+        var direction: int = closed_dirs[rng.randi_range(0, closed_dirs.size() - 1)]
         var radiator_mesh := BoxMesh.new()
         radiator_mesh.size = Vector3(1.4, 0.6, 0.25)
         var radiator := MeshInstance3D.new()
@@ -337,7 +337,7 @@ func _add_sign(rng: RandomNumberGenerator) -> void:
                         open_dirs.append(dir)
         if open_dirs.is_empty():
                 open_dirs = [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
-        var direction := open_dirs[rng.randi_range(0, open_dirs.size() - 1)]
+        var direction: int = open_dirs[rng.randi_range(0, open_dirs.size() - 1)]
         var sign_mesh := BoxMesh.new()
         sign_mesh.size = Vector3(1.1, 0.35, 0.05)
         var sign := MeshInstance3D.new()
@@ -382,7 +382,7 @@ func _build_wall_with_door(parent: Node3D, offset: Vector3, rotation: Vector3, d
         var segment_width := (cell_size - door_width) * 0.5
         var segments := [Vector3(-door_width * 0.5 - segment_width * 0.5, 0, 0), Vector3(door_width * 0.5 + segment_width * 0.5, 0, 0)]
         for i in range(segments.size()):
-                var pos_offset := segments[i]
+                var pos_offset: Vector3 = segments[i]
                 var mesh_size := Vector3(segment_width, wall_height, wall_thickness)
                 _create_wall_segment(parent, offset + _rotate_vector(pos_offset, rotation), rotation, mesh_size, direction, i)
 
