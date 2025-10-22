@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bu3nywqdw4grf" path="res://scenes/Player.tscn" id="1"]
 
-[sub_resource type="SkyMaterial" id="3"]
+[sub_resource type="ProceduralSkyMaterial" id="3"]
 sky_top_color = Color(0.462745, 0.658824, 0.894118, 1)
 sky_horizon_color = Color(0.709804, 0.768627, 0.823529, 1)
 
