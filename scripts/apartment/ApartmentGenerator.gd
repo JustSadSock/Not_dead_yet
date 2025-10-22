@@ -59,9 +59,8 @@ func _cleanup_distant_cells(center: Vector2i) -> void:
         for coord in to_remove:
                 var data: Dictionary = _cells.get(coord, {})
                 if data.has("node"):
-                        var node_variant := data["node"]
-                        if node_variant is Node:
-                                var node: Node = node_variant
+                        var node: Node = data.get("node", null)
+                        if node != null:
                                 node.queue_free()
                 _cells.erase(coord)
                 _pending_connections.erase(coord)
@@ -91,7 +90,7 @@ func _create_cell(coord: Vector2i) -> void:
         for dir in range(connections.size()):
                 if connections[dir]:
                         connection_count += 1
-        var directions := [0, 1, 2, 3]
+        var directions: Array[int] = [0, 1, 2, 3]
         directions.shuffle()
         for dir in directions:
                 if connection_count >= desired_openings:
@@ -102,7 +101,7 @@ func _create_cell(coord: Vector2i) -> void:
                         connections[dir] = true
                         connection_count += 1
         if connection_count < desired_openings:
-                var remaining: Array = []
+                var remaining: Array[int] = []
                 for dir in range(connections.size()):
                         if not connections[dir]:
                                 remaining.append(dir)
@@ -130,7 +129,7 @@ func _create_cell(coord: Vector2i) -> void:
                 push_error("Apartment cell scene must inherit from Node3D.")
                 return
         instance.name = "Cell_%d_%d" % [coord.x, coord.y]
-        var script := instance.get_script()
+        var script: Script = instance.get_script()
         if instance is ApartmentCell:
                 instance.cell_size = cell_size
                 instance.set_style_seed(_coordinate_seed(coord) * 17)
@@ -149,7 +148,8 @@ func _create_cell(coord: Vector2i) -> void:
 
 func _queue_pending_connection(coord: Vector2i, direction: int) -> void:
         if not _pending_connections.has(coord):
-                _pending_connections[coord] = []
+                var new_list: Array[int] = []
+                _pending_connections[coord] = new_list
         var list: Array[int] = _pending_connections[coord]
         if direction not in list:
                 list.append(direction)
@@ -164,9 +164,8 @@ func _update_cell_connection(coord: Vector2i, direction: int, enabled: bool) -> 
         if connections[direction] == enabled:
                 return
         connections[direction] = enabled
-        var node_variant := data.get("node", null)
-        if node_variant is Node:
-                var node: Node = node_variant
+        var node: Node = data.get("node", null)
+        if node != null:
                 if node.has_method("set_connection"):
                         node.call_deferred("set_connection", direction, enabled)
 
