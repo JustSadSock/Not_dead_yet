@@ -57,10 +57,11 @@ func _cleanup_distant_cells(center: Vector2i) -> void:
                         if _distance_metric(coord, center) > unload_distance:
                                 to_remove.append(coord)
         for coord in to_remove:
-                var data := _cells.get(coord, null)
-                if data != null and data.has("node"):
-                        var node := data["node"]
-                        if node is Node:
+                var data: Dictionary = _cells.get(coord, {})
+                if data.has("node"):
+                        var node_variant := data["node"]
+                        if node_variant is Node:
+                                var node: Node = node_variant
                                 node.queue_free()
                 _cells.erase(coord)
                 _pending_connections.erase(coord)
@@ -107,7 +108,7 @@ func _create_cell(coord: Vector2i) -> void:
                                 remaining.append(dir)
                 while connection_count < desired_openings and not remaining.is_empty():
                         var idx := rng.randi_range(0, remaining.size() - 1)
-                        var forced_dir := remaining[idx]
+                        var forced_dir: int = remaining[idx]
                         remaining.remove_at(idx)
                         connections[forced_dir] = true
                         connection_count += 1
@@ -118,7 +119,7 @@ func _create_cell(coord: Vector2i) -> void:
         for dir in range(connections.size()):
                 if not connections[dir]:
                         continue
-                var neighbor_coord := coord + DIR_VECTORS[dir]
+                var neighbor_coord: Vector2i = coord + DIR_VECTORS[dir]
                 var opposite := _opposite_direction(dir)
                 if _cells.has(neighbor_coord):
                         _update_cell_connection(neighbor_coord, opposite, true)
@@ -149,7 +150,7 @@ func _create_cell(coord: Vector2i) -> void:
 func _queue_pending_connection(coord: Vector2i, direction: int) -> void:
         if not _pending_connections.has(coord):
                 _pending_connections[coord] = []
-        var list: Array = _pending_connections[coord]
+        var list: Array[int] = _pending_connections[coord]
         if direction not in list:
                 list.append(direction)
 
@@ -159,13 +160,15 @@ func _update_cell_connection(coord: Vector2i, direction: int, enabled: bool) -> 
                         _queue_pending_connection(coord, direction)
                 return
         var data: Dictionary = _cells[coord]
-        var connections: Array = data["connections"]
+        var connections: Array[bool] = data["connections"]
         if connections[direction] == enabled:
                 return
         connections[direction] = enabled
-        var node := data["node"]
-        if node != null and node.has_method("set_connection"):
-                node.call_deferred("set_connection", direction, enabled)
+        var node_variant := data.get("node", null)
+        if node_variant is Node:
+                var node: Node = node_variant
+                if node.has_method("set_connection"):
+                        node.call_deferred("set_connection", direction, enabled)
 
 func _world_to_cell(world_position: Vector3) -> Vector2i:
         return Vector2i(int(round(world_position.x / cell_size)), int(round(world_position.z / cell_size)))

@@ -256,7 +256,7 @@ func _rebuild_props() -> void:
                 child.queue_free()
         var layout_seed := 0
         for dir in range(_connections.size()):
-                layout_seed = layout_seed * 2 + (_connections[dir] ? 1 : 0)
+                layout_seed = layout_seed * 2 + (1 if _connections[dir] else 0)
         var rng := RandomNumberGenerator.new()
         var combined_seed := _style_seed * 7919 + layout_seed * 103 + 17
         if combined_seed == 0:
@@ -322,11 +322,11 @@ func _add_ceiling_pipe(rng: RandomNumberGenerator) -> void:
         var orientation := rng.randi_range(0, 1)
         if orientation == 0:
                 pipe.rotation = Vector3(0, 0, PI * 0.5)
-                var side := (rng.randf() < 0.5 ? -1 : 1)
+                var side := (-1 if rng.randf() < 0.5 else 1)
                 pipe.translation = Vector3(0, height, side * (cell_size * 0.5 - 0.45))
         else:
                 pipe.rotation = Vector3(PI * 0.5, 0, 0)
-                var side := (rng.randf() < 0.5 ? -1 : 1)
+                var side := (-1 if rng.randf() < 0.5 else 1)
                 pipe.translation = Vector3(side * (cell_size * 0.5 - 0.45), height, 0)
         _props_container.add_child(pipe)
 
