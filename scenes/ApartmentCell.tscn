@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3kn1lu8um0yu"]
+
+[ext_resource type="Script" path="res://scripts/apartment/ApartmentCell.gd" id="1"]
+
+[node name="ApartmentCell" type="Node3D"]
+script = ExtResource("1")

@@ -42,15 +42,15 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	var input_dir := Vector3.ZERO
-	var basis := Basis(Vector3.UP, rotation.y)
+	var movement_basis := Basis(Vector3.UP, rotation.y)
 	if Input.is_action_pressed("move_forward"):
-		input_dir -= basis.z
+		input_dir -= movement_basis.z
 	if Input.is_action_pressed("move_back"):
-		input_dir += basis.z
+		input_dir += movement_basis.z
 	if Input.is_action_pressed("move_left"):
-		input_dir -= basis.x
+		input_dir -= movement_basis.x
 	if Input.is_action_pressed("move_right"):
-		input_dir += basis.x
+		input_dir += movement_basis.x
 	input_dir = input_dir.normalized()
 
 	var speed := move_speed

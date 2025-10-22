@@ -1,82 +1,29 @@
-[gd_scene load_steps=11 format=3 uid="uid://cb6t2f6iyq3ph"]
+[gd_scene load_steps=5 format=3 uid="uid://cb6t2f6iyq3ph"]
 
 [ext_resource type="PackedScene" uid="uid://bu3nywqdw4grf" path="res://scenes/Player.tscn" id="1"]
-
-[sub_resource type="SkyMaterial" id="3"]
-resource_local_to_scene = false
-resource_name = ""
-sky_top_color = Color(0.462745, 0.658824, 0.894118, 1)
-sky_horizon_color = Color(0.709804, 0.768627, 0.823529, 1)
-
-[sub_resource type="Sky" id="2"]
-sky_material = SubResource("3")
+[ext_resource type="Script" path="res://scripts/apartment/ApartmentGenerator.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ApartmentCell.tscn" id="3"]
 
 [sub_resource type="Environment" id="1"]
-background_mode = 2
-sky = SubResource("2")
-
-[sub_resource type="BoxShape3D" id="4"]
-size = Vector3(40, 1, 40)
-
-[sub_resource type="BoxMesh" id="5"]
-size = Vector3(40, 1, 40)
-
-[sub_resource type="BoxShape3D" id="6"]
-size = Vector3(4, 2, 1)
-
-[sub_resource type="BoxMesh" id="7"]
-size = Vector3(4, 2, 1)
-
-[sub_resource type="BoxShape3D" id="8"]
-size = Vector3(6, 0.5, 2)
-
-[sub_resource type="BoxMesh" id="9"]
-size = Vector3(6, 0.5, 2)
+background_mode = 3
+background_color = Color(0.0352941, 0.0352941, 0.0392157, 1)
+ambient_light_color = Color(0.0784314, 0.0823529, 0.0941176, 1)
+ambient_light_energy = 0.2
 
 [node name="Main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("1")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.939693, -0.34202, 0, 0.17101, 0.469846, -0.866025, 0.296198, 0.813798, 0.499999, 0, 10, 0)
-shadow_enabled = true
-
-[node name="Ground" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
-shape = SubResource("4")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
-mesh = SubResource("5")
-
-[node name="Cover" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -10)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Cover"]
-shape = SubResource("6")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Cover"]
-mesh = SubResource("7")
-
-[node name="Ramp" type="StaticBody3D" parent="."]
-transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -8, 0, -5)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ramp"]
-shape = SubResource("8")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ramp"]
-mesh = SubResource("9")
-
 [node name="Player" parent="." instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="Target" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, -20)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Target"]
-shape = SubResource("6")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Target"]
-mesh = SubResource("7")
+[node name="ApartmentGenerator" type="Node3D" parent="."]
+script = ExtResource("2")
+cell_scene = ExtResource("3")
+player_path = NodePath("../Player")
+cell_size = 10.0
+load_distance = 2
+unload_distance = 4
+update_interval = 0.25
+world_seed = 2024
